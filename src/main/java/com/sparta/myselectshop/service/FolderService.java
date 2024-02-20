@@ -1,6 +1,8 @@
 package com.sparta.myselectshop.service;
 
+import com.sparta.myselectshop.dto.FolderResponseDto;
 import com.sparta.myselectshop.entity.Folder;
+import com.sparta.myselectshop.entity.User;
 import com.sparta.myselectshop.repository.FolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class FolderService {
     public void addFolders(List<String> folderNames, User user) {
 
         // 입력으로 들어온 폴더 이름을 기준으로, 회원이 이미 생성한 폴더들을 조회합니다.
+        // 여러 조건을 한번에 조건으로 주기 위해 In 사용
         List<Folder> existFolderList = folderRepository.findAllByUserAndNameIn(user, folderNames);
 
         List<Folder> folderList = new ArrayList<>();
@@ -33,6 +36,18 @@ public class FolderService {
         }
 
         folderRepository.saveAll(folderList);
+    }
+
+    // 로그인한 회원이 등록된 모든 폴더 조회
+    public List<FolderResponseDto> getFolders(User user) {
+        List<Folder> folderList = folderRepository.findAllByUser(user);
+        List<FolderResponseDto> responseDtoList = new ArrayList<>();
+
+        for (Folder folder : folderList) {
+            responseDtoList.add(new FolderResponseDto(folder));
+        }
+
+        return responseDtoList;
     }
 
     private Boolean isExistFolderName(String folderName, List<Folder> existFolderList) {
