@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity // JPA가 관리할 수 있는 Entity 클래스 지정
 @Getter
 @Setter
@@ -47,6 +50,9 @@ public class Product extends Timestamped {
     즉, 모든 상황에 필요한 것이 아니기 때문에 LAZY로 설정
     모든 상황에서 필요하다면 EAGER -> default라 제외해도 괜찮습니다.
      */
+
+    @OneToMany(mappedBy = "product")
+    private List<ProductFolder> productFolderList = new ArrayList<>();
 
     public Product(ProductRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
