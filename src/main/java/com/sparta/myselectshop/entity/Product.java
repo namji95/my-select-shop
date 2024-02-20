@@ -34,11 +34,26 @@ public class Product extends Timestamped {
     @Column(nullable = false)
     private int myprice;
 
-    public Product(ProductRequestDto requestDto) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+    /*
+    @ManyToOne(fetch = ?)
+    fetch 뒤에는
+    FetchType.LAZY와
+    FetchType.EAGER이 있습니다.
+    default 값으로는 EAGER로 되어 있습니다.
+    Product를 조회할 때마다 회원의 정보가 필요한 것이 아니기 때문에
+    즉, 모든 상황에 필요한 것이 아니기 때문에 LAZY로 설정
+    모든 상황에서 필요하다면 EAGER -> default라 제외해도 괜찮습니다.
+     */
+
+    public Product(ProductRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.image = requestDto.getImage();
         this.link = requestDto.getLink();
         this.lprice = requestDto.getLprice();
+        this.user = user;
     }
 
     public void update(ProductMypriceRequestDto requestDto) {
